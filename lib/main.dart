@@ -1,10 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
+import 'package:audioplayers/audio_cache.dart';
 
-void main() {
-  runApp(MaterialApp(title: 'Kidphabets', home: homeClass()));
-}
+void main() => runApp(MaterialApp(title: 'Kidphabets', home: homeClass()));
 
 // ignore: camel_case_types
 class homeClass extends StatefulWidget {
@@ -14,26 +13,25 @@ class homeClass extends StatefulWidget {
 
 // ignore: camel_case_types
 class _homeClassState extends State<homeClass> {
+  static AudioCache player = AudioCache();
   double h;
   double w;
   int alphabetNumber = 1;
   int photoNumber = 1;
+  int soundNumber = 1;
   String nameOfElement = 'Apple';
-  
+  bool initialState =false;
+
   @override
   Widget build(BuildContext context) {
-    h = MediaQuery
-        .of(context)
-        .size
-        .height;
-    w = MediaQuery
-        .of(context)
-        .size
-        .width;
-    
+    h = MediaQuery.of(context).size.height;
+    w = MediaQuery.of(context).size.width;
+    splashSound();
+
     return Scaffold(
-      appBar: AppBar(title: Text(' Kid phabets'),
-        backgroundColor: Colors.pink,
+      appBar: AppBar(
+        title: Text(' Kidphabets'),
+        backgroundColor: Colors.pink[400],
       ),
       body: Container(
         height: h,
@@ -45,35 +43,50 @@ class _homeClassState extends State<homeClass> {
             children: <Widget>[
               Row(
                 children: <Widget>[
-                  Expanded(
-                    child: Container(
-                      height: h / 9,
-                      width: w,
-                      child: Center(
-                        child: Text(
-                          nameOfElement,
-                          style:
-                          TextStyle(fontSize: 62, color: Colors.pink[400]),
+                  Padding(
+                    padding: EdgeInsets.only(bottom: h/15),
+                    child: Expanded(
+                      child: Container(
+                        height: h / 9,
+                        width: w,
+                        child: Center(
+                          child: Text(
+                            nameOfElement,
+                            style:
+                                TextStyle(fontSize: h/14, color: Colors.pink[300]),
+                          ),
                         ),
                       ),
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: h / 40,),
+              SizedBox(
+                height: h / 40,
+              ),
               Row(
                 children: <Widget>[
                   expandedForAlphabet(),
                   expandedForPhoto(),
                 ],
               ),
-              SizedBox(
-                height: h / 5,
+              Row(
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: h/20),
+                    child: SizedBox(
+                      height: h / 5,
+                      width: w,
+                      child: shuffleAll(),
+                    ),
+                  ),
+                                  ],
               ),
+
               Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: <Widget>[
-                footer(),
+                  footer(),
                 ],
               ),
             ],
@@ -89,144 +102,177 @@ class _homeClassState extends State<homeClass> {
       child: FlatButton(
         onPressed: () {
           changeAplhabetNum();
+          playLetter();
         },
-        child: Image.asset(
-            'images/alphabets/alphabet$alphabetNumber.png'),
+        child: Image.asset('images/alphabets/alphabet$alphabetNumber.png'),
       ),
     );
   }
-  
+
   Expanded expandedForPhoto() {
     return Expanded(
       flex: 2,
       child: FlatButton(
           onPressed: () {
-            changePhotoNum();
+            changeAplhabetNumDown();
+            playLetter();
           },
           child: Image.asset('images/photos/f$photoNumber.png')),
     );
   }
+
+  Expanded shuffleAll() {
+    return Expanded(
+        child: FlatButton(
+      padding: EdgeInsets.all(10),
+          shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(12.0)),
+      onPressed: () {
+        changePhotoNum();
+        playLetter();
+      },
+      child: Icon(
+        Icons.shuffle,
+        size: h/10,
+        color: Colors.pink[100],
+      ),
+    ));
+  }
   
   void changeTitleAndSound() {
     setState(() {
-      if(alphabetNumber==1 || photoNumber==1){
+      if (alphabetNumber == 1 || photoNumber == 1) {
         nameOfElement = 'Apple';
-      }
-      else if (alphabetNumber==2 || photoNumber==2){
+        soundNumber = 1;
+      } else if (alphabetNumber == 2 || photoNumber == 2) {
         nameOfElement = 'Ball';
-      }else if (alphabetNumber==3 || photoNumber==3){
+        soundNumber = 2;
+      } else if (alphabetNumber == 3 || photoNumber == 3) {
         nameOfElement = 'Cat';
-      
-      }else if (alphabetNumber==4 || photoNumber==4){
+        soundNumber = 3;
+      } else if (alphabetNumber == 4 || photoNumber == 4) {
         nameOfElement = 'Dog';
-      }else if (alphabetNumber==5 || photoNumber==5){
+        soundNumber = 4;
+      } else if (alphabetNumber == 5 || photoNumber == 5) {
         nameOfElement = 'Egg';
-      
-      }else if (alphabetNumber==6 || photoNumber==6){
+        soundNumber = 5;
+      } else if (alphabetNumber == 6 || photoNumber == 6) {
         nameOfElement = 'Frog';
-      
-      }else if (alphabetNumber==7 || photoNumber==7){
+        soundNumber = 6;
+      } else if (alphabetNumber == 7 || photoNumber == 7) {
         nameOfElement = 'Giraffe';
-      
-      }else if (alphabetNumber==8 || photoNumber==8){
+        soundNumber = 7;
+      } else if (alphabetNumber == 8 || photoNumber == 8) {
         nameOfElement = 'Horse';
-      }else if (alphabetNumber==9 || photoNumber==9){
+        soundNumber = 8;
+      } else if (alphabetNumber == 9 || photoNumber == 9) {
         nameOfElement = 'Icecream';
-      
-      }else if (alphabetNumber==10 || photoNumber==10){
+        soundNumber = 9;
+      } else if (alphabetNumber == 10 || photoNumber == 10) {
         nameOfElement = 'Juice';
-      
-      }else if (alphabetNumber==11 || photoNumber==11){
-      
+        soundNumber = 10;
+      } else if (alphabetNumber == 11 || photoNumber == 11) {
         nameOfElement = 'Kite';
-      
-      }else if (alphabetNumber==12 || photoNumber==12){
-      
+        soundNumber = 11;
+      } else if (alphabetNumber == 12 || photoNumber == 12) {
         nameOfElement = 'Light';
-      }else if (alphabetNumber==13 || photoNumber==13){
+        soundNumber = 12;
+      } else if (alphabetNumber == 13 || photoNumber == 13) {
         nameOfElement = 'Mango';
-      }else if (alphabetNumber==14 || photoNumber==14){
+        soundNumber = 13;
+      } else if (alphabetNumber == 14 || photoNumber == 14) {
         nameOfElement = 'Noodles';
-      
-      }else if (alphabetNumber==15 || photoNumber==15){
-      
+        soundNumber = 14;
+      } else if (alphabetNumber == 15 || photoNumber == 15) {
         nameOfElement = 'Orange';
-      
-      }else if (alphabetNumber==16 || photoNumber==16){
-      
+        soundNumber = 15;
+      } else if (alphabetNumber == 16 || photoNumber == 16) {
         nameOfElement = 'Pen';
-      
-      }else if (alphabetNumber==17 || photoNumber==17){
-      
+        soundNumber = 16;
+      } else if (alphabetNumber == 17 || photoNumber == 17) {
         nameOfElement = 'Queen';
-      
-      }else if (alphabetNumber==18 || photoNumber==18){
-      
+        soundNumber = 17;
+      } else if (alphabetNumber == 18 || photoNumber == 18) {
         nameOfElement = 'Rabbit';
-      
-      }else if (alphabetNumber==19 || photoNumber==19){
-      
+        soundNumber = 18;
+      } else if (alphabetNumber == 19 || photoNumber == 19) {
         nameOfElement = 'Sun';
-      }else if (alphabetNumber==20 || photoNumber==20){
-      
-      
+        soundNumber = 19;
+      } else if (alphabetNumber == 20 || photoNumber == 20) {
         nameOfElement = 'Tiger!';
-      
-      }else if (alphabetNumber==21 || photoNumber==21){
-      
+        soundNumber = 20;
+      } else if (alphabetNumber == 21 || photoNumber == 21) {
         nameOfElement = 'Umbrella';
-      
-      }else if (alphabetNumber==22 || photoNumber==22){
-      
+        soundNumber = 21;
+      } else if (alphabetNumber == 22 || photoNumber == 22) {
         nameOfElement = 'Van';
-      
-      }else if (alphabetNumber==23 || photoNumber==23){
-      
+        soundNumber = 22;
+      } else if (alphabetNumber == 23 || photoNumber == 23) {
         nameOfElement = 'Water';
-      }else if (alphabetNumber==24 || photoNumber==24){
-      
-      
+        soundNumber = 23;
+      } else if (alphabetNumber == 24 || photoNumber == 24) {
         nameOfElement = 'X Ray';
-      
-      }else if (alphabetNumber==25 || photoNumber==25){
-      
+        soundNumber = 24;
+      } else if (alphabetNumber == 25 || photoNumber == 25) {
         nameOfElement = 'YoYo';
-      
-      }else if (alphabetNumber==26 || photoNumber==26){
-      
+        soundNumber = 25;
+      } else if (alphabetNumber == 26 || photoNumber == 26) {
         nameOfElement = 'Zoo';
-      
-      }
-      else{
+        soundNumber = 26;
+      } else {
         nameOfElement = 'Apple';
+        soundNumber = 1;
       }
     });
   }
-  
-  void changeAplhabetNum(){
+
+  void changeAplhabetNum() {
     setState(() {
       alphabetNumber = alphabetNumber + 1;
-      for(int i=1; i<=alphabetNumber;i++){
+      for (int i = 1; i <= alphabetNumber; i++) {
         while (alphabetNumber == 27) {
           alphabetNumber = 1;
         }
-        photoNumber=alphabetNumber;
+        photoNumber = alphabetNumber;
         changeTitleAndSound();
       }
     });
   }
-  
-  void changePhotoNum(){
+
+  void changeAplhabetNumDown() {
+    setState(() {
+      if (alphabetNumber <= 1) {
+        alphabetNumber = 26;
+        photoNumber = alphabetNumber;
+        changeTitleAndSound();
+      } else {
+        alphabetNumber = alphabetNumber - 1;
+        photoNumber = alphabetNumber;
+        changeTitleAndSound();
+      }
+    });
+  }
+
+  void changePhotoNum() {
     setState(() {
       photoNumber = Random().nextInt(26) + 1;
-    for(int i=0; i<=photoNumber; i++){
-      alphabetNumber=photoNumber;
-    }
+      alphabetNumber = photoNumber;
       changeTitleAndSound();
     });
   }
+
+  void playLetter() {
+    final player = AudioCache();
+    player.play('s$soundNumber.m4a');
+  }
   
-  Expanded footer(){
+  void splashSound(){
+    if(initialState==false) {
+      player.play('s1.m4a');
+      initialState=true;
+    }
+  }
+
+  Expanded footer() {
     return Expanded(
       child: Container(
         margin: EdgeInsets.only(top: h / 20),
@@ -234,10 +280,11 @@ class _homeClassState extends State<homeClass> {
         height: h / 30,
         width: w,
         child: Center(
-            child: Text('Developed by Shoaib', style: TextStyle(
-                color: Colors.white),)),
+            child: Text(
+          'Developed by Shoaib',
+          style: TextStyle(color: Colors.white),
+        )),
       ),
     );
   }
-
 }
