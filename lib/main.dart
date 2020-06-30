@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'sizes_helpers.dart';
 import 'dart:math';
 import 'package:audioplayers/audio_cache.dart';
 
@@ -14,18 +15,14 @@ class homeClass extends StatefulWidget {
 // ignore: camel_case_types
 class _homeClassState extends State<homeClass> {
   static AudioCache player = AudioCache();
-  double h;
-  double w;
   int alphabetNumber = 1;
   int photoNumber = 1;
   int soundNumber = 1;
   String nameOfElement = 'Apple';
-  bool initialState =false;
+  bool initialState = false;
 
   @override
   Widget build(BuildContext context) {
-    h = MediaQuery.of(context).size.height;
-    w = MediaQuery.of(context).size.width;
     splashSound();
 
     return Scaffold(
@@ -33,111 +30,105 @@ class _homeClassState extends State<homeClass> {
         title: Text(' Kidphabets'),
         backgroundColor: Colors.pink[400],
       ),
-      body: Container(
-        height: h,
-        width: w,
+      body: SafeArea(
         child: Center(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              Row(
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(bottom: h/15),
-                    child: Expanded(
-                      child: Container(
-                        height: h / 9,
-                        width: w,
-                        child: Center(
-                          child: Text(
-                            nameOfElement,
-                            style:
-                                TextStyle(fontSize: h/14, color: Colors.pink[300]),
-                          ),
-                        ),
-                      ),
+              Expanded(
+                flex: 6,
+                child: Container(
+                  width: displayWidth(context),
+                  child: Center(
+                    child: Text(
+                      nameOfElement,
+                      style: TextStyle(
+                          fontSize: displayWidth(context) * .15,
+                          color: Colors.pink[500]),
                     ),
                   ),
-                ],
+                ),
               ),
-              SizedBox(
-                height: h / 40,
-              ),
-              Row(
-                children: <Widget>[
-                  expandedForAlphabet(),
-                  expandedForPhoto(),
-                ],
-              ),
-              Row(
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.symmetric(vertical: h/20),
-                    child: SizedBox(
-                      height: h / 5,
-                      width: w,
-                      child: shuffleAll(),
-                    ),
-                  ),
-                                  ],
-              ),
-
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: <Widget>[
-                  footer(),
-                ],
-              ),
+              expandedForPhoto(),
+              expandedForAlphabet(),
+              shuffleAll(),
+            Expanded(
+              flex: 2,
+              child: SizedBox(),
+            ),
+              footer(),
             ],
           ),
         ),
       ),
     );
   }
-  
+
   Expanded expandedForAlphabet() {
     return Expanded(
-      flex: 2,
+      flex: 12,
       child: FlatButton(
         onPressed: () {
           changeAplhabetNum();
           playLetter();
         },
-        child: Image.asset('images/alphabets/alphabet$alphabetNumber.png'),
+        child: Image.asset(
+          'images/alphabets/alphabet$alphabetNumber.png',
+          height: displayHeight(context) * .3,
+        ),
       ),
     );
   }
 
   Expanded expandedForPhoto() {
     return Expanded(
-      flex: 2,
+      flex: 10,
       child: FlatButton(
-          onPressed: () {
-            changeAplhabetNumDown();
-            playLetter();
-          },
-          child: Image.asset('images/photos/f$photoNumber.png')),
+        onPressed: () {
+          changeAplhabetNumDown();
+          playLetter();
+        },
+        child: Image.asset(
+          'images/photos/f$photoNumber.png',
+          height: displayHeight(context) * .3,
+        ),
+      ),
     );
   }
 
   Expanded shuffleAll() {
     return Expanded(
+        flex: 4,
         child: FlatButton(
-      padding: EdgeInsets.all(10),
-          shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(12.0)),
-      onPressed: () {
-        changePhotoNum();
-        playLetter();
-      },
-      child: Icon(
-        Icons.shuffle,
-        size: h/10,
-        color: Colors.pink[100],
-      ),
-    ));
+          onPressed: () {
+            changePhotoNum();
+            playLetter();
+          },
+          child: Icon(
+            Icons.shuffle,
+            size: displayHeight(context) * .1,
+            color: Colors.pink[100],
+          ),
+        ));
   }
-  
+
+  Expanded footer() {
+    return Expanded(
+      flex: 1,
+      child: Container(
+        color: Colors.red[900],
+        height: displayHeight(context) * .03,
+        width: displayWidth(context),
+        child: Center(
+            child: Text(
+          'Developed by Shoaib',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        )),
+      ),
+    );
+  }
+
   void changeTitleAndSound() {
     setState(() {
       if (alphabetNumber == 1 || photoNumber == 1) {
@@ -264,27 +255,11 @@ class _homeClassState extends State<homeClass> {
     final player = AudioCache();
     player.play('s$soundNumber.m4a');
   }
-  
-  void splashSound(){
-    if(initialState==false) {
-      player.play('s1.m4a');
-      initialState=true;
-    }
-  }
 
-  Expanded footer() {
-    return Expanded(
-      child: Container(
-        margin: EdgeInsets.only(top: h / 20),
-        color: Colors.red[900],
-        height: h / 30,
-        width: w,
-        child: Center(
-            child: Text(
-          'Developed by Shoaib',
-          style: TextStyle(color: Colors.white),
-        )),
-      ),
-    );
+  void splashSound() {
+    if (initialState == false) {
+      player.play('s1.m4a');
+      initialState = true;
+    }
   }
 }
